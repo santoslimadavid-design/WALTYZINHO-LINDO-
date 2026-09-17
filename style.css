@@ -1,0 +1,644 @@
+/* =========================================
+   CONFIGURAÇÕES GERAIS
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #1e3a5f,
+            #172554
+        );
+
+    color: white;
+
+    min-height: 100vh;
+
+    padding: 20px;
+}
+
+
+/* =========================================
+   CONTAINER
+========================================= */
+
+.container {
+
+    width: 100%;
+
+    max-width: 1000px;
+
+    margin: auto;
+
+    text-align: center;
+
+}
+
+
+/* =========================================
+   CABEÇALHO
+========================================= */
+
+header {
+
+    margin-bottom: 20px;
+
+}
+
+header h1 {
+
+    font-size: 40px;
+
+    color: #ffd43b;
+
+    margin-bottom: 10px;
+
+}
+
+header p {
+
+    color: #dbeafe;
+
+    font-size: 17px;
+
+}
+
+
+/* =========================================
+   PAINEL
+========================================= */
+
+.painel {
+
+    background: #172554;
+
+    border: 2px solid #3b82f6;
+
+    border-radius: 12px;
+
+    padding: 15px;
+
+    margin-bottom: 15px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 10px;
+
+    font-size: 16px;
+
+}
+
+.painel strong {
+
+    color: #ffd43b;
+
+}
+
+
+/* =========================================
+   ÁREA DO JOGO
+========================================= */
+
+#jogo {
+
+    width: 100%;
+
+    height: 500px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background-color: #287a45;
+
+    background-image:
+
+        linear-gradient(
+            #3d8c55 2px,
+            transparent 2px
+        ),
+
+        linear-gradient(
+            90deg,
+            #3d8c55 2px,
+            transparent 2px
+        );
+
+    background-size: 40px 40px;
+
+    border: 5px solid #0f172a;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 15px 40px
+        rgba(0, 0, 0, 0.45);
+
+}
+
+
+/* =========================================
+   PERSONAGEM
+========================================= */
+
+#personagem {
+
+    position: absolute;
+
+    width: 45px;
+
+    height: 45px;
+
+    left: 30px;
+
+    top: 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 32px;
+
+    z-index: 5;
+
+    user-select: none;
+
+}
+
+
+/* =========================================
+   MOEDAS
+========================================= */
+
+.moeda {
+
+    position: absolute;
+
+    font-size: 30px;
+
+    z-index: 3;
+
+    animation:
+        flutuar 0.8s
+        infinite alternate;
+
+    user-select: none;
+
+}
+
+
+#moeda1 {
+
+    left: 180px;
+
+    top: 100px;
+
+}
+
+
+#moeda2 {
+
+    left: 430px;
+
+    top: 350px;
+
+}
+
+
+#moeda3 {
+
+    left: 700px;
+
+    top: 180px;
+
+}
+
+
+@keyframes flutuar {
+
+    from {
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+    to {
+
+        transform:
+            translateY(-8px)
+            scale(1.15);
+
+    }
+
+}
+
+
+/* =========================================
+   OBSTÁCULOS
+========================================= */
+
+.obstaculo {
+
+    position: absolute;
+
+    background:
+        linear-gradient(
+            135deg,
+            #dc2626,
+            #991b1b
+        );
+
+    border: 3px solid #7f1d1d;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 5px 10px
+        rgba(0, 0, 0, 0.3);
+
+}
+
+
+/* PRIMEIRO OBSTÁCULO */
+
+.obstaculo1 {
+
+    width: 180px;
+
+    height: 35px;
+
+    left: 250px;
+
+    top: 80px;
+
+}
+
+
+/* SEGUNDO OBSTÁCULO */
+
+.obstaculo2 {
+
+    width: 40px;
+
+    height: 180px;
+
+    left: 580px;
+
+    top: 250px;
+
+}
+
+
+/* =========================================
+   SAÍDA
+========================================= */
+
+#saida {
+
+    position: absolute;
+
+    right: 25px;
+
+    bottom: 25px;
+
+    font-size: 50px;
+
+    z-index: 2;
+
+    filter:
+        drop-shadow(
+            0 0 10px
+            #ffd43b
+        );
+
+}
+
+
+/* =========================================
+   JANELA DE MENSAGEM
+========================================= */
+
+#mensagem {
+
+    position: absolute;
+
+    width: 520px;
+
+    max-width: 90%;
+
+    left: 50%;
+
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    background:
+        rgba(
+            15,
+            23,
+            42,
+            0.97
+        );
+
+    padding: 30px;
+
+    border-radius: 15px;
+
+    border: 2px solid #ffd43b;
+
+    z-index: 20;
+
+    box-shadow:
+        0 15px 40px
+        rgba(0, 0, 0, 0.5);
+
+}
+
+
+#mensagem h2 {
+
+    color: #ffd43b;
+
+    margin-bottom: 15px;
+
+}
+
+
+#mensagem p {
+
+    color: #e2e8f0;
+
+    line-height: 1.5;
+
+    margin-bottom: 15px;
+
+}
+
+
+/* =========================================
+   CAMPO DE NOME
+========================================= */
+
+#nome {
+
+    width: 100%;
+
+    padding: 13px;
+
+    margin-bottom: 12px;
+
+    border-radius: 8px;
+
+    border: 2px solid #475569;
+
+    background: #0f172a;
+
+    color: white;
+
+    font-size: 16px;
+
+    outline: none;
+
+}
+
+
+#nome:focus {
+
+    border-color: #3b82f6;
+
+}
+
+
+/* =========================================
+   BOTÕES
+========================================= */
+
+button {
+
+    background:
+        linear-gradient(
+            135deg,
+            #facc15,
+            #eab308
+        );
+
+    color: #172033;
+
+    border: none;
+
+    padding: 13px 25px;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+}
+
+
+button:hover {
+
+    transform: scale(1.04);
+
+    filter: brightness(1.1);
+
+}
+
+
+/* =========================================
+   OPÇÕES DAS PERGUNTAS
+========================================= */
+
+.opcoes {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin-top: 15px;
+
+}
+
+
+.opcoes button {
+
+    width: 100%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    color: white;
+
+    border:
+        2px solid
+        #60a5fa;
+
+}
+
+
+.opcoes button:hover {
+
+    background:
+        linear-gradient(
+            135deg,
+            #3b82f6,
+            #2563eb
+        );
+
+}
+
+
+/* =========================================
+   INSTRUÇÕES
+========================================= */
+
+.instrucoes {
+
+    margin-top: 18px;
+
+    background: #172554;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    border:
+        1px solid
+        #3b82f6;
+
+}
+
+
+.instrucoes h2 {
+
+    color: #ffd43b;
+
+    margin-bottom: 12px;
+
+}
+
+
+.instrucoes p {
+
+    color: #dbeafe;
+
+    margin: 7px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================================
+   RODAPÉ
+========================================= */
+
+footer {
+
+    margin-top: 20px;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================================
+   RESPONSIVIDADE
+========================================= */
+
+@media (max-width: 700px) {
+
+    body {
+
+        padding: 10px;
+
+    }
+
+
+    header h1 {
+
+        font-size: 28px;
+
+    }
+
+
+    header p {
+
+        font-size: 14px;
+
+    }
+
+
+    .painel {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        font-size: 13px;
+
+    }
+
+
+    #jogo {
+
+        height: 450px;
+
+    }
+
+
+    #mensagem {
+
+        padding: 20px;
+
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    #jogo {
+
+        height: 400px;
+
+    }
+
+
+    .instrucoes {
+
+        font-size: 13px;
+
+    }
+
+}

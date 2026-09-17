@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Desafio do Desenvolvedor</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- CABEÇALHO -->
+
+        <header>
+
+            <h1>💻 Desafio do Desenvolvedor</h1>
+david
+            <p>
+                Uma aventura educativa pelo mundo do Desenvdavidolvimento de Sistemas
+            </p>
+
+        </header>
+
+
+        <!-- PAINEL DO JOGO -->
+
+        <div class="painel">
+
+            <div>
+                👤 Jogador:
+                <strong id="nomeJogador">---</strong>
+            </div>
+
+            <div>
+                ⭐ Pontos:
+                <strong id="pontos">0</strong>
+            </div>
+
+            <div>
+                🏆 Fase:
+                <strong id="fase">1</strong>
+            </div>
+
+            <div>
+                ❤️ Vidas:
+                <strong id="vidas">3</strong>
+            </div>
+
+        </div>
+
+
+        <!-- ÁREA DO JOGO -->
+
+        <main id="jogo">
+
+            <!-- TELA INICIAL -->
+
+            <div id="mensagem">
+
+                <h2>🎮 Bem-vindo!</h2>
+
+                <p>
+                    Prepare-se para testar seus conhecimentos
+                    sobre Desenvolvimento de Sistemas.
+                </p>
+
+                <input
+                    type="text"
+                    id="nome"
+                    placeholder="Digite seu nome"
+                    maxlength="20"
+                >
+
+                <button id="iniciar">
+                    🚀 Iniciar Jogo
+                </button>
+
+            </div>
+
+
+            <!-- PERSONAGEM -->
+
+            <div id="personagem">
+                🧑‍💻
+            </div>
+
+
+            <!-- MOEDAS -->
+
+            <div class="moeda" id="moeda1">
+                ⭐
+            </div>
+
+            <div class="moeda" id="moeda2">
+                ⭐
+            </div>
+
+            <div class="moeda" id="moeda3">
+                ⭐
+            </div>
+
+
+            <!-- OBSTÁCULOS -->
+
+            <div class="obstaculo obstaculo1"></div>
+
+            <div class="obstaculo obstaculo2"></div>
+
+
+            <!-- SAÍDA -->
+
+            <div id="saida">
+                🚪
+            </div>
+
+        </main>
+
+
+        <!-- INSTRUÇÕES -->
+
+        <section class="instrucoes">
+
+            <h2>🎯 Como jogar?</h2>
+
+            <p>
+                Use as <strong>setas do teclado</strong>
+                para movimentar o personagem.
+            </p>
+
+            <p>
+                ⭐ Colete as estrelas para ganhar pontos.
+            </p>
+
+            <p>
+                🚪 Chegue até a porta para responder
+                a pergunta da fase.
+            </p>
+
+            <p>
+                💻 Acerte a pergunta para avançar.
+            </p>
+
+        </section>
+
+
+        <!-- RODAPÉ -->
+
+        <footer>
+
+            <p>
+                Projeto escolar — Curso Técnico em Desenvolvimento de Sistemas
+            </p>
+
+        </footer>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
