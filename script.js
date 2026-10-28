@@ -1,1058 +1,588 @@
-// ============================================
-// ELEMENTOS DO HTML
-// ============================================
 
-const personagem =
-    document.getElementById("personagem");
+/* ==========================================
+   DESAFIO DO DESENVOLVEDOR
+   Computadores, Windows e Inteligência Artificial
+========================================== */
 
-const jogo =
-    document.getElementById("jogo");
+const personagem = document.getElementById("personagem");
+const jogo = document.getElementById("jogo");
+const pontosTexto = document.getElementById("pontos");
+const faseTexto = document.getElementById("fase");
+const vidasTexto = document.getElementById("vidas");
+const nomeJogador = document.getElementById("nomeJogador");
+const mensagem = document.getElementById("mensagem");
+const moedas = [...document.querySelectorAll(".moeda")];
+const obstaculos = [...document.querySelectorAll(".obstaculo")];
+const saida = document.getElementById("saida");
 
-const pontosTexto =
-    document.getElementById("pontos");
-
-const faseTexto =
-    document.getElementById("fase");
-
-const vidasTexto =
-    document.getElementById("vidas");
-
-const nomeJogador =
-    document.getElementById("nomeJogador");
-
-const mensagem =
-    document.getElementById("mensagem");
-
-const iniciar =
-    document.getElementById("iniciar");
-
-const campoNome =
-    document.getElementById("nome");
-
-const moedas =
-    document.querySelectorAll(".moeda");
-
-const obstaculos =
-    document.querySelectorAll(".obstaculo");
-
-const saida =
-    document.getElementById("saida");
-
-
-// ============================================
-// VARIÁVEIS DO JOGO
-// ============================================
+const TOTAL_FASES = 5;
+const VELOCIDADE = 220;
+const VIDAS_INICIAIS = 3;
 
 let x = 30;
-
-let y = 30;
-
+let y = 55;
 let pontos = 0;
-
 let fase = 1;
-
-let vidas = 3;
-
+let vidas = VIDAS_INICIAIS;
 let nome = "";
-
 let jogoIniciado = false;
+let perguntaAberta = false;
+let finalizado = false;
+let ultimaColisao = 0;
+let ultimaAtualizacao = 0;
 
-const velocidade = 15;
+const teclas = new Set();
+const moedasColetadas = new Set();
 
 
-// ============================================
-// BANCO DE PERGUNTAS
-// ============================================
+// ==========================================
+// PERGUNTAS DO JOGO
+// ==========================================
 
 const perguntas = [
-
     {
-        fase: 1,
-
-        pergunta:
-            "O que significa a sigla HTML?",
-
-        opcoes: [
-            "HyperText Markup Language",
-            "High Technology Machine Language",
-            "Home Tool Markup Language",
-            "Hyperlink Text Machine"
-        ],
-
+        pergunta: "Qual foi um dos primeiros computadores eletrônicos de grande porte?",
+        opcoes: ["ENIAC", "Windows", "Android", "PlayStation"],
         resposta: 0
     },
-
-
     {
-        fase: 2,
-
-        pergunta:
-            "Para que serve o CSS?",
-
-        opcoes: [
-            "Para criar bancos de dados",
-            "Para estilizar páginas web",
-            "Para instalar programas",
-            "Para criar sistemas operacionais"
-        ],
-
+        pergunta: "Qual empresa desenvolveu o sistema operacional Windows?",
+        opcoes: ["Google", "Microsoft", "Samsung", "Intel"],
         resposta: 1
     },
-
-
     {
-        fase: 3,
-
-        pergunta:
-            "Qual linguagem é muito utilizada para criar interações em páginas web?",
-
+        pergunta: "O que significa a sigla IA?",
         opcoes: [
-            "JavaScript",
-            "HTML",
-            "CSS",
-            "SQL"
+            "Internet Automática",
+            "Informação Avançada",
+            "Inteligência Artificial",
+            "Instalação de Aplicativos"
         ],
-
+        resposta: 2
+    },
+    {
+        pergunta: "Para que serve o Windows?",
+        opcoes: [
+            "Gerenciar o computador e executar programas",
+            "Somente assistir vídeos",
+            "Apenas editar fotos",
+            "Substituir as peças do computador"
+        ],
         resposta: 0
     },
-
-
     {
-        fase: 4,
-
-        pergunta:
-            "O que é um algoritmo?",
-
+        pergunta: "O que a inteligência artificial pode fazer?",
         opcoes: [
-            "Um tipo de computador",
-            "Uma sequência de passos para resolver um problema",
-            "Um programa de edição de imagens",
-            "Um sistema operacional"
+            "Aprender padrões e responder perguntas",
+            "Funcionar sem energia",
+            "Substituir todos os computadores",
+            "Servir apenas como calculadora"
         ],
-
-        resposta: 1
-    },
-
-
-    {
-        fase: 5,
-
-        pergunta:
-            "O que é programação?",
-
-        opcoes: [
-            "Criar instruções para um computador executar",
-            "Somente montar computadores",
-            "Criar desenhos no computador",
-            "Instalar aplicativos"
-        ],
-
         resposta: 0
     }
-
 ];
 
 
-// ============================================
-// INICIAR O JOGO
-// ============================================
+// ==========================================
+// PAINEL E MENSAGENS
+// ==========================================
 
-iniciar.addEventListener(
-    "click",
-    iniciarJogo
-);
-
-
-function iniciarJogo() {
-
-    nome =
-        campoNome.value.trim();
-
-
-    if (nome === "") {
-
-        alert(
-            "⚠️ Digite seu nome para começar!"
-        );
-
-        campoNome.focus();
-
-        return;
-
-    }
-
-
-    nomeJogador.textContent =
-        nome;
-
-
-    mensagem.style.display =
-        "none";
-
-
-    jogoIniciado =
-        true;
-
-
-    resetarPersonagem();
-
+function atualizarPainel() {
+    pontosTexto.textContent = pontos;
+    faseTexto.textContent = fase;
+    vidasTexto.textContent = vidas;
+    nomeJogador.textContent = nome || "---";
 }
 
-
-// ============================================
-// MOVIMENTAÇÃO
-// ============================================
-
-document.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (!jogoIniciado) {
-
-            return;
-
-        }
-
-
-        let novoX = x;
-
-        let novoY = y;
-
-
-        if (event.key === "ArrowUp") {
-
-            novoY -= velocidade;
-
-            event.preventDefault();
-
-        }
-
-
-        if (event.key === "ArrowDown") {
-
-            novoY += velocidade;
-
-            event.preventDefault();
-
-        }
-
-
-        if (event.key === "ArrowLeft") {
-
-            novoX -= velocidade;
-
-            event.preventDefault();
-
-        }
-
-
-        if (event.key === "ArrowRight") {
-
-            novoX += velocidade;
-
-            event.preventDefault();
-
-        }
-
-
-        // ====================================
-        // LIMITES DO MAPA
-        // ====================================
-
-        if (novoX < 0) {
-
-            novoX = 0;
-
-        }
-
-
-        if (novoY < 0) {
-
-            novoY = 0;
-
-        }
-
-
-        if (
-            novoX >
-            jogo.clientWidth -
-            personagem.offsetWidth
-        ) {
-
-            novoX =
-                jogo.clientWidth -
-                personagem.offsetWidth;
-
-        }
-
-
-        if (
-            novoY >
-            jogo.clientHeight -
-            personagem.offsetHeight
-        ) {
-
-            novoY =
-                jogo.clientHeight -
-                personagem.offsetHeight;
-
-        }
-
-
-        // ====================================
-        // COLISÃO
-        // ====================================
-
-        if (
-            !colideComObstaculo(
-                novoX,
-                novoY
-            )
-        ) {
-
-            x = novoX;
-
-            y = novoY;
-
-            atualizarPersonagem();
-
-            verificarMoedas();
-
-            verificarSaida();
-
-        }
-
-        else {
-
-            perderVida();
-
-        }
-
-    }
-);
-
-
-// ============================================
-// ATUALIZAR PERSONAGEM
-// ============================================
-
-function atualizarPersonagem() {
-
-    personagem.style.left =
-        x + "px";
-
-    personagem.style.top =
-        y + "px";
-
+function escaparHTML(texto) {
+    return String(texto).replace(/[&<>"']/g, caractere => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[caractere]);
 }
 
-
-// ============================================
-// RESETAR PERSONAGEM
-// ============================================
-
-function resetarPersonagem() {
-
-    x = 30;
-
-    y = 30;
-
-    atualizarPersonagem();
-
-}
-
-
-// ============================================
-// VERIFICAR COLISÃO COM OBSTÁCULOS
-// ============================================
-
-function colideComObstaculo(
-    novoX,
-    novoY
-) {
-
-    const personagemRect = {
-
-        left: novoX,
-
-        right:
-            novoX +
-            personagem.offsetWidth,
-
-        top: novoY,
-
-        bottom:
-            novoY +
-            personagem.offsetHeight
-
-    };
-
-
-    for (
-        let obstaculo
-        of obstaculos
-    ) {
-
-        const obstaculoRect = {
-
-            left:
-                obstaculo.offsetLeft,
-
-            right:
-                obstaculo.offsetLeft +
-                obstaculo.offsetWidth,
-
-            top:
-                obstaculo.offsetTop,
-
-            bottom:
-                obstaculo.offsetTop +
-                obstaculo.offsetHeight
-
-        };
-
-
-        const colisao = (
-
-            personagemRect.right >
-            obstaculoRect.left &&
-
-            personagemRect.left <
-            obstaculoRect.right &&
-
-            personagemRect.bottom >
-            obstaculoRect.top &&
-
-            personagemRect.top <
-            obstaculoRect.bottom
-
-        );
-
-
-        if (colisao) {
-
-            return true;
-
-        }
-
-    }
-
-
-    return false;
-
-}
-
-
-// ============================================
-// COLETAR MOEDAS
-// ============================================
-
-function verificarMoedas() {
-
-    moedas.forEach(
-        function(moeda) {
-
-            if (
-                moeda.style.display ===
-                "none"
-            ) {
-
-                return;
-
-            }
-
-
-            const personagemRect =
-                personagem.getBoundingClientRect();
-
-            const moedaRect =
-                moeda.getBoundingClientRect();
-
-
-            const pegou = (
-
-                personagemRect.right >
-                moedaRect.left &&
-
-                personagemRect.left <
-                moedaRect.right &&
-
-                personagemRect.bottom >
-                moedaRect.top &&
-
-                personagemRect.top <
-                moedaRect.bottom
-
-            );
-
-
-            if (pegou) {
-
-                moeda.style.display =
-                    "none";
-
-
-                pontos += 10;
-
-
-                pontosTexto.textContent =
-                    pontos;
-
-            }
-
-        }
-    );
-
-}
-
-
-// ============================================
-// VERIFICAR SAÍDA
-// ============================================
-
-function verificarSaida() {
-
-    const personagemRect =
-        personagem.getBoundingClientRect();
-
-    const saidaRect =
-        saida.getBoundingClientRect();
-
-
-    const chegou = (
-
-        personagemRect.right >
-        saidaRect.left &&
-
-        personagemRect.left <
-        saidaRect.right &&
-
-        personagemRect.bottom >
-        saidaRect.top &&
-
-        personagemRect.top <
-        saidaRect.bottom
-
-    );
-
-
-    if (chegou) {
-
-        abrirPergunta();
-
-    }
-
-}
-
-
-// ============================================
-// ABRIR PERGUNTA
-// ============================================
-
-function abrirPergunta() {
-
-    jogoIniciado =
-        false;
-
-
-    const perguntaAtual =
-        perguntas[fase - 1];
-
-
-    let html = `
-
-        <h2>
-            💻 Desafio da Fase ${fase}
-        </h2>
-
-        <p>
-            ${perguntaAtual.pergunta}
-        </p>
-
-        <div class="opcoes">
-
+function mostrarMensagem(titulo, texto, botao = "") {
+    mensagem.innerHTML = `
+        <h2>${titulo}</h2>
+        <p>${texto}</p>
+        ${botao}
     `;
+    mensagem.style.display = "block";
+}
 
-
-    perguntaAtual.opcoes.forEach(
-        function(opcao, index) {
-
-            html += `
-
-                <button
-                    onclick="
-                        responderPergunta(
-                            ${index},
-                            ${perguntaAtual.resposta}
-                        )
-                    "
-                >
-                    ${opcao}
-                </button>
-
-            `;
-
-        }
-    );
-
-
-    html += `
-
-        </div>
-
-    `;
-
-
-    mensagem.innerHTML =
-        html;
-
-
-    mensagem.style.display =
-        "block";
-
+function pausarJogo() {
+    jogoIniciado = false;
+    teclas.clear();
 }
 
 
-// ============================================
-// RESPONDER PERGUNTA
-// ============================================
+// ==========================================
+// INICIAR COM BOTÃO OU ENTER
+// ==========================================
 
-function responderPergunta(
-    respostaEscolhida,
-    respostaCorreta
-) {
+mensagem.addEventListener("click", event => {
+    const botao = event.target.closest("button");
+    if (!botao) return;
+
+    if (botao.id === "iniciar") {
+        iniciarJogo();
+    } else if (botao.id === "continuar") {
+        continuarJogo();
+    } else if (botao.id === "reiniciar") {
+        reiniciarJogo();
+    } else if (botao.dataset.resposta !== undefined) {
+        responderPergunta(Number(botao.dataset.resposta));
+    }
+});
+
+document.addEventListener("keydown", event => {
+    const campoNome = document.getElementById("nome");
 
     if (
-        respostaEscolhida ===
-        respostaCorreta
+        event.key === "Enter" &&
+        campoNome &&
+        event.target === campoNome &&
+        mensagem.style.display !== "none"
     ) {
-
-        // ==============================
-        // RESPOSTA CORRETA
-        // ==============================
-
-        pontos += 50;
-
-
-        pontosTexto.textContent =
-            pontos;
-
-
-        if (fase < 5) {
-
-            alert(
-                "✅ Resposta correta!\n\n" +
-                "Você avançou para a próxima fase!"
-            );
-
-
-            fase++;
-
-
-            faseTexto.textContent =
-                fase;
-
-
-            resetarMoedas();
-
-            resetarPersonagem();
-
-            aumentarDificuldade();
-
-
-            mensagem.style.display =
-                "none";
-
-
-            jogoIniciado =
-                true;
-
-        }
-
-        else {
-
-            finalizarJogo();
-
-        }
-
+        event.preventDefault();
+        iniciarJogo();
+        return;
     }
 
-    else {
+    if (!jogoIniciado || perguntaAberta || finalizado) return;
 
-        // ==============================
-        // RESPOSTA ERRADA
-        // ==============================
+    const tecla = event.key.toLowerCase();
+    const controles = [
+        "arrowup", "arrowdown", "arrowleft", "arrowright",
+        "w", "a", "s", "d"
+    ];
 
-        vidas--;
+    if (controles.includes(tecla)) {
+        event.preventDefault();
+        teclas.add(tecla);
+    }
+});
 
+document.addEventListener("keyup", event => {
+    teclas.delete(event.key.toLowerCase());
+});
 
-        vidasTexto.textContent =
-            vidas;
+window.addEventListener("blur", () => teclas.clear());
 
+function iniciarJogo() {
+    const campoNome = document.getElementById("nome");
+    if (!campoNome || jogoIniciado || finalizado) return;
 
-        if (vidas <= 0) {
+    const digitado = campoNome.value.trim();
 
-            gameOver();
-
-        }
-
-        else {
-
-            alert(
-                "❌ Resposta incorreta!\n\n" +
-                "Você perdeu uma vida."
-            );
-
-
-            resetarPersonagem();
-
-
-            mensagem.style.display =
-                "none";
-
-
-            jogoIniciado =
-                true;
-
-        }
-
+    if (!digitado) {
+        campoNome.placeholder = "Digite seu nome primeiro!";
+        campoNome.focus();
+        return;
     }
 
+    nome = digitado.slice(0, 20);
+    jogoIniciado = true;
+    perguntaAberta = false;
+
+    resetarPersonagem();
+    atualizarPainel();
+    mensagem.style.display = "none";
 }
 
 
-// ============================================
-// AUMENTAR DIFICULDADE
-// ============================================
+// ==========================================
+// MOVIMENTAÇÃO
+// ==========================================
 
-function aumentarDificuldade() {
+function atualizarMovimento(delta) {
+    if (!jogoIniciado || perguntaAberta || finalizado) return;
 
-    if (fase === 2) {
+    let dx = 0;
+    let dy = 0;
 
-        obstaculos[0].style.width =
-            "230px";
+    if (teclas.has("arrowup") || teclas.has("w")) dy--;
+    if (teclas.has("arrowdown") || teclas.has("s")) dy++;
+    if (teclas.has("arrowleft") || teclas.has("a")) dx--;
+    if (teclas.has("arrowright") || teclas.has("d")) dx++;
 
-        obstaculos[1].style.height =
-            "210px";
+    if (dx === 0 && dy === 0) return;
 
+    const tamanho = Math.hypot(dx, dy);
+    dx = dx / tamanho * VELOCIDADE * delta;
+    dy = dy / tamanho * VELOCIDADE * delta;
+
+    moverPersonagem(dx, dy);
+}
+
+function moverPersonagem(dx, dy) {
+    const largura = personagem.offsetWidth;
+    const altura = personagem.offsetHeight;
+
+    const maxX = jogo.clientWidth - largura;
+    const maxY = jogo.clientHeight - altura;
+
+    const novoX = Math.max(0, Math.min(maxX, x + dx));
+    const novoY = Math.max(0, Math.min(maxY, y + dy));
+
+    let bloqueado = false;
+
+    if (!colideComObstaculo(novoX, y, largura, altura)) {
+        x = novoX;
+    } else if (dx !== 0) {
+        bloqueado = true;
     }
 
-
-    if (fase === 3) {
-
-        obstaculos[0].style.width =
-            "280px";
-
-        obstaculos[1].style.height =
-            "240px";
-
-        obstaculos[1].style.left =
-            "520px";
-
+    if (!colideComObstaculo(x, novoY, largura, altura)) {
+        y = novoY;
+    } else if (dy !== 0) {
+        bloqueado = true;
     }
 
+    posicionarPersonagem();
 
-    if (fase === 4) {
+    if (bloqueado) perderVidaPorColisao();
+    if (!jogoIniciado) return;
 
-        obstaculos[0].style.width =
-            "320px";
+    verificarMoedas();
+    verificarSaida();
+}
 
-        obstaculos[0].style.left =
-            "200px";
+function colideComObstaculo(px, py, largura, altura) {
+    return obstaculos.some(obstaculo => {
+        const ox = obstaculo.offsetLeft;
+        const oy = obstaculo.offsetTop;
 
-        obstaculos[1].style.height =
-            "280px";
+        return (
+            px < ox + obstaculo.offsetWidth &&
+            px + largura > ox &&
+            py < oy + obstaculo.offsetHeight &&
+            py + altura > oy
+        );
+    });
+}
 
-        obstaculos[1].style.left =
-            "480px";
+function posicionarPersonagem() {
+    personagem.style.left = `${x}px`;
+    personagem.style.top = `${y}px`;
+}
 
-    }
-
-
-    if (fase === 5) {
-
-        obstaculos[0].style.width =
-            "350px";
-
-        obstaculos[0].style.left =
-            "180px";
-
-        obstaculos[1].style.height =
-            "320px";
-
-        obstaculos[1].style.left =
-            "450px";
-
-    }
-
+function resetarPersonagem() {
+    teclas.clear();
+    x = 30;
+    y = 55;
+    posicionarPersonagem();
 }
 
 
-// ============================================
-// RESETAR MOEDAS
-// ============================================
+// ==========================================
+// COLETAR ESTRELAS
+// ==========================================
+
+function verificarMoedas() {
+    const jogador = personagem.getBoundingClientRect();
+
+    moedas.forEach((moeda, indice) => {
+        if (moedasColetadas.has(indice)) return;
+
+        const estrela = moeda.getBoundingClientRect();
+
+        const coletou =
+            jogador.right > estrela.left &&
+            jogador.left < estrela.right &&
+            jogador.bottom > estrela.top &&
+            jogador.top < estrela.bottom;
+
+        if (coletou) {
+            moedasColetadas.add(indice);
+            moeda.style.display = "none";
+            pontos += 10;
+            atualizarPainel();
+        }
+    });
+}
 
 function resetarMoedas() {
-
-    moedas.forEach(
-        function(moeda) {
-
-            moeda.style.display =
-                "block";
-
-        }
-    );
-
+    moedasColetadas.clear();
+    moedas.forEach(moeda => moeda.style.display = "");
 }
 
 
-// ============================================
-// PERDER VIDA
-// ============================================
+// ==========================================
+// PORTA E PERGUNTAS
+// ==========================================
 
-function perderVida() {
+function verificarSaida() {
+    if (perguntaAberta || finalizado) return;
 
-    vidas--;
+    const jogador = personagem.getBoundingClientRect();
+    const porta = saida.getBoundingClientRect();
 
-
-    vidasTexto.textContent =
-        vidas;
-
-
-    resetarPersonagem();
-
-
-    if (vidas <= 0) {
-
-        gameOver();
-
+    if (
+        jogador.right > porta.left &&
+        jogador.left < porta.right &&
+        jogador.bottom > porta.top &&
+        jogador.top < porta.bottom
+    ) {
+        abrirPergunta();
     }
-
 }
 
+function abrirPergunta() {
+    if (perguntaAberta || finalizado) return;
 
-// ============================================
-// GAME OVER
-// ============================================
+    pausarJogo();
+    perguntaAberta = true;
 
-function gameOver() {
+    const atual = perguntas[fase - 1];
 
-    jogoIniciado =
-        false;
-
+    const opcoesHTML = atual.opcoes.map((opcao, indice) => `
+        <button type="button" data-resposta="${indice}">
+            ${String.fromCharCode(65 + indice)}. ${escaparHTML(opcao)}
+        </button>
+    `).join("");
 
     mensagem.innerHTML = `
-
-        <h2>
-            💥 Fim de jogo!
-        </h2>
-
-        <p>
-            ${nome}, você ficou sem vidas.
-        </p>
-
-        <p>
-            Pontuação final:
-            <strong>
-                ${pontos}
-            </strong>
-        </p>
-
-        <button
-            onclick="reiniciarJogo()"
-        >
-            🔄 Jogar Novamente
-        </button>
-
+        <h2>🧠 Desafio da Fase ${fase}</h2>
+        <p>${escaparHTML(atual.pergunta)}</p>
+        <div class="opcoes">${opcoesHTML}</div>
     `;
 
+    mensagem.style.display = "block";
+}
 
-    mensagem.style.display =
-        "block";
+function responderPergunta(escolhida) {
+    if (!perguntaAberta || finalizado) return;
 
+    const atual = perguntas[fase - 1];
+
+    if (escolhida === atual.resposta) {
+        perguntaAberta = false;
+        pontos += 50;
+
+        if (fase < TOTAL_FASES) {
+            fase++;
+            atualizarPainel();
+            resetarMoedas();
+            resetarPersonagem();
+            aplicarDificuldade();
+
+            mostrarMensagem(
+                "✅ Resposta correta!",
+                `Parabéns, ${escaparHTML(nome)}! Você avançou para a fase ${fase}.`,
+                '<button type="button" id="continuar">🚀 Próxima fase</button>'
+            );
+        } else {
+            finalizarJogo();
+        }
+    } else {
+        vidas--;
+        atualizarPainel();
+
+        if (vidas <= 0) {
+            gameOver();
+            return;
+        }
+
+        mostrarMensagem(
+            "❌ Resposta incorreta!",
+            `Você perdeu uma vida. Restam ${vidas}. Tente novamente!`,
+            '<button type="button" id="continuar">🧠 Tentar novamente</button>'
+        );
+
+        perguntaAberta = true;
+    }
+}
+
+function continuarJogo() {
+    if (finalizado) return;
+
+    mensagem.style.display = "none";
+    teclas.clear();
+
+    if (perguntaAberta) {
+        perguntaAberta = false;
+        abrirPergunta();
+    } else {
+        jogoIniciado = true;
+    }
 }
 
 
-// ============================================
-// FINALIZAR JOGO
-// ============================================
+// ==========================================
+// DIFICULDADE POR FASE
+// ==========================================
 
-function finalizarJogo() {
+function aplicarDificuldade() {
+    const largura = jogo.clientWidth;
+    const altura = jogo.clientHeight;
 
-    jogoIniciado =
-        false;
+    const configuracoes = {
+        1: [180, 0.25, 150, 0.58],
+        2: [195, 0.27, 165, 0.62],
+        3: [210, 0.22, 180, 0.57],
+        4: [225, 0.18, 190, 0.52],
+        5: [240, 0.15, 200, 0.48]
+    };
 
-
-    pontos += 100;
-
-
-    pontosTexto.textContent =
-        pontos;
-
-
-    mensagem.innerHTML = `
-
-        <h2>
-            🏆 PARABÉNS, ${nome.toUpperCase()}!
-        </h2>
-
-        <p>
-            Você completou todas as 5 fases!
-        </p>
-
-        <p>
-            Você demonstrou conhecimentos
-            básicos sobre Desenvolvimento
-            de Sistemas.
-        </p>
-
-        <p>
-            ⭐ Pontuação final:
-            <strong>
-                ${pontos}
-            </strong>
-        </p>
-
-        <p>
-            🎓 Desafio concluído!
-        </p>
-
-        <button
-            onclick="reiniciarJogo()"
-        >
-            🔄 Jogar Novamente
-        </button>
-
-    `;
-
-
-    mensagem.style.display =
-        "block";
-
-}
-
-
-// ============================================
-// REINICIAR JOGO
-// ============================================
-
-function reiniciarJogo() {
-
-    pontos = 0;
-
-    fase = 1;
-
-    vidas = 3;
-
-
-    pontosTexto.textContent =
-        pontos;
-
-    faseTexto.textContent =
-        fase;
-
-    vidasTexto.textContent =
-        vidas;
-
+    const [w1, p1, h2, p2] = configuracoes[fase];
 
     obstaculos[0].style.width =
-        "180px";
+        `${Math.min(w1, largura * 0.4)}px`;
 
     obstaculos[0].style.left =
-        "250px";
-
+        `${Math.min(p1 * largura, largura - obstaculos[0].offsetWidth)}px`;
 
     obstaculos[1].style.height =
-        "180px";
+        `${Math.min(h2, altura * 0.45)}px`;
 
     obstaculos[1].style.left =
-        "580px";
+        `${Math.min(p2 * largura, largura - obstaculos[1].offsetWidth)}px`;
+
+    obstaculos[1].style.top =
+        `${Math.max(150, altura - obstaculos[1].offsetHeight - 35)}px`;
+}
 
 
+// ==========================================
+// VIDAS
+// ==========================================
+
+function perderVidaPorColisao() {
+    const agora = performance.now();
+
+    if (agora - ultimaColisao < 1000) return;
+
+    ultimaColisao = agora;
+    vidas--;
+    atualizarPainel();
+
+    if (vidas <= 0) gameOver();
+}
+
+
+// ==========================================
+// FIM DE JOGO E VITÓRIA
+// ==========================================
+
+function gameOver() {
+    pausarJogo();
+    perguntaAberta = false;
+    finalizado = true;
+
+    mostrarMensagem(
+        "💥 Fim de jogo!",
+        `${escaparHTML(nome)}, suas vidas acabaram.<br><br>
+        ⭐ Pontuação final: <strong>${pontos}</strong>`,
+        '<button type="button" id="reiniciar">🔄 Jogar novamente</button>'
+    );
+}
+
+function finalizarJogo() {
+    pausarJogo();
+    perguntaAberta = false;
+    finalizado = true;
+
+    pontos += 100;
+    atualizarPainel();
+
+    mostrarMensagem(
+        `🏆 Parabéns, ${escaparHTML(nome)}!`,
+        `Você completou todas as cinco fases sobre computadores, Windows e inteligência artificial!<br><br>
+        ⭐ Pontuação final: <strong>${pontos}</strong><br><br>
+        🎓 Desafio concluído!`,
+        '<button type="button" id="reiniciar">🔄 Jogar novamente</button>'
+    );
+}
+
+
+// ==========================================
+// REINICIAR
+// ==========================================
+
+function reiniciarJogo() {
+    pontos = 0;
+    fase = 1;
+    vidas = VIDAS_INICIAIS;
+    nome = "";
+
+    jogoIniciado = false;
+    perguntaAberta = false;
+    finalizado = false;
+    ultimaColisao = 0;
+
+    teclas.clear();
     resetarMoedas();
-
     resetarPersonagem();
-
+    restaurarObstaculos();
+    atualizarPainel();
 
     mensagem.innerHTML = `
-
-        <h2>
-            🎮 Bem-vindo novamente!
-        </h2>
-
-        <p>
-            Digite seu nome para começar.
-        </p>
-
+        <h2>🎮 Bem-vindo novamente!</h2>
+        <p>Aprenda sobre computadores, Windows e inteligência artificial.</p>
         <input
             type="text"
             id="nome"
             placeholder="Digite seu nome"
             maxlength="20"
         >
-
-        <button id="iniciar">
-            🚀 Iniciar Jogo
-        </button>
-
+        <button type="button" id="iniciar">🚀 Iniciar jogo</button>
     `;
 
+    mensagem.style.display = "block";
+    document.getElementById("nome").focus();
+}
 
-    mensagem.style.display =
-        "block";
+function restaurarObstaculos() {
+    obstaculos[0].style.width = "180px";
+    obstaculos[0].style.height = "35px";
+    obstaculos[0].style.left = "250px";
+    obstaculos[0].style.top = "80px";
 
-
-    jogoIniciado =
-        false;
-
-
-    // Recria os elementos da tela inicial
-
-    const novoCampoNome =
-        document.getElementById("nome");
-
-    const novoBotao =
-        document.getElementById("iniciar");
-
-
-    novoBotao.addEventListener(
-        "click",
-        function() {
-
-            const novoNome =
-                novoCampoNome.value.trim();
+    obstaculos[1].style.width = "40px";
+    obstaculos[1].style.height = "180px";
+    obstaculos[1].style.left = "580px";
+    obstaculos[1].style.top = "250px";
+}
 
 
-            if (novoNome === "") {
+// ==========================================
+// LOOP PRINCIPAL
+// ==========================================
 
-                alert(
-                    "⚠️ Digite seu nome!"
-                );
+function loopJogo(tempo) {
+    if (!ultimaAtualizacao) ultimaAtualizacao = tempo;
 
-                return;
-
-            }
-
-
-            nome =
-                novoNome;
-
-
-            nomeJogador.textContent =
-                nome;
-
-
-            mensagem.style.display =
-                "none";
-
-
-            jogoIniciado =
-                true;
-
-
-            resetarPersonagem();
-
-        }
+    const delta = Math.min(
+        (tempo - ultimaAtualizacao) / 1000,
+        0.035
     );
 
+    ultimaAtualizacao = tempo;
+
+    atualizarMovimento(delta);
+    requestAnimationFrame(loopJogo);
 }
+
+
+// ==========================================
+// INICIALIZAÇÃO
+// ==========================================
+
+atualizarPainel();
+restaurarObstaculos();
+resetarPersonagem();
+
+requestAnimationFrame(loopJogo);
+
+window.addEventListener("resize", () => {
+    if (fase > 1 && !finalizado) aplicarDificuldade();
+
+    x = Math.max(0, Math.min(x, jogo.clientWidth - personagem.offsetWidth));
+    y = Math.max(0, Math.min(y, jogo.clientHeight - personagem.offsetHeight));
+
+    posicionarPersonagem();
+});

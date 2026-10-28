@@ -1,168 +1,172 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080d1b">
+
+    <meta
+        name="description"
+        content="Um jogo educativo sobre a história dos computadores, Windows e inteligência artificial."
+    >
 
     <title>Desafio do Desenvolvedor</title>
 
     <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 
 <body>
-
     <div class="container">
 
-        <!-- CABEÇALHO -->
-
         <header>
+            <div class="etiqueta">🎮 JOGO EDUCATIVO</div>
 
             <h1>💻 Desafio do Desenvolvedor</h1>
-david
-            <p>
-                Uma aventura educativa pelo mundo do Desenvdavidolvimento de Sistemas
-            </p>
 
+            <p>
+                Explore a tecnologia, teste seus conhecimentos
+                e conquiste todas as fases!
+            </p>
         </header>
 
+        <!-- PAINEL DO JOGADOR -->
 
-        <!-- PAINEL DO JOGO -->
-
-        <div class="painel">
-
-            <div>
-                👤 Jogador:
+        <section class="painel" aria-label="Status do jogador">
+            <div class="status">
+                <span>👤 Jogador</span>
                 <strong id="nomeJogador">---</strong>
             </div>
 
-            <div>
-                ⭐ Pontos:
+            <div class="status">
+                <span>⭐ Pontos</span>
                 <strong id="pontos">0</strong>
             </div>
 
-            <div>
-                🏆 Fase:
+            <div class="status">
+                <span>🏆 Fase</span>
                 <strong id="fase">1</strong>
             </div>
 
-            <div>
-                ❤️ Vidas:
+            <div class="status">
+                <span>❤️ Vidas</span>
                 <strong id="vidas">3</strong>
             </div>
+        </section>
 
-        </div>
+        <!-- JOGO -->
 
+        <main>
+            <section
+                id="jogo"
+                aria-label="Área do jogo"
+            >
 
-        <!-- ÁREA DO JOGO -->
+                <div class="legenda-jogo">
+                    <span>🟢 MISSÃO: COLETE AS ESTRELAS</span>
+                    <span>🚪 ENCONTRE A SAÍDA</span>
+                </div>
 
-        <main id="jogo">
+                <!-- JANELA INICIAL, PERGUNTAS E RESULTADOS -->
 
-            <!-- TELA INICIAL -->
-
-            <div id="mensagem">
-
-                <h2>🎮 Bem-vindo!</h2>
-
-                <p>
-                    Prepare-se para testar seus conhecimentos
-                    sobre Desenvolvimento de Sistemas.
-                </p>
-
-                <input
-                    type="text"
-                    id="nome"
-                    placeholder="Digite seu nome"
-                    maxlength="20"
+                <div
+                    id="mensagem"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="tituloMensagem"
                 >
+                    <div class="icone-inicial">🧑‍💻</div>
 
-                <button id="iniciar">
-                    🚀 Iniciar Jogo
-                </button>
+                    <h2 id="tituloMensagem">Bem-vindo ao desafio!</h2>
 
-            </div>
+                    <p>
+                        Você está pronto para uma aventura pelo mundo
+                        dos computadores, do Windows e da inteligência
+                        artificial?
+                    </p>
 
+                    <label for="nome">Digite seu nome para começar</label>
 
-            <!-- PERSONAGEM -->
+                    <input
+                        type="text"
+                        id="nome"
+                        placeholder="Seu nome aqui..."
+                        maxlength="20"
+                        autocomplete="given-name"
+                    >
 
-            <div id="personagem">
-                🧑‍💻
-            </div>
+                    <button type="button" id="iniciar">
+                        🚀 Iniciar jogo
+                    </button>
 
+                    <p class="dica-inicial">
+                        5 fases · Perguntas fáceis · Diversão e aprendizado
+                    </p>
+                </div>
 
-            <!-- MOEDAS -->
+                <!-- PERSONAGEM -->
 
-            <div class="moeda" id="moeda1">
-                ⭐
-            </div>
+                <div id="personagem" aria-label="Personagem">
+                    🧑‍💻
+                </div>
 
-            <div class="moeda" id="moeda2">
-                ⭐
-            </div>
+                <!-- ESTRELAS -->
 
-            <div class="moeda" id="moeda3">
-                ⭐
-            </div>
+                <div class="moeda" id="moeda1" aria-label="Estrela">⭐</div>
+                <div class="moeda" id="moeda2" aria-label="Estrela">⭐</div>
+                <div class="moeda" id="moeda3" aria-label="Estrela">⭐</div>
 
+                <!-- OBSTÁCULOS -->
 
-            <!-- OBSTÁCULOS -->
+                <div class="obstaculo obstaculo1" aria-label="Obstáculo"></div>
+                <div class="obstaculo obstaculo2" aria-label="Obstáculo"></div>
 
-            <div class="obstaculo obstaculo1"></div>
+                <!-- SAÍDA -->
 
-            <div class="obstaculo obstaculo2"></div>
-
-
-            <!-- SAÍDA -->
-
-            <div id="saida">
-                🚪
-            </div>
-
+                <div id="saida" aria-label="Porta de saída">🚪</div>
+            </section>
         </main>
-
 
         <!-- INSTRUÇÕES -->
 
         <section class="instrucoes">
+            <h2>🎯 Como jogar</h2>
 
-            <h2>🎯 Como jogar?</h2>
+            <div class="instrucoes-grid">
+                <article class="instrucao">
+                    <span class="instrucao-icone">⌨️</span>
+                    <h3>Movimente-se</h3>
+                    <p>Use as setas do teclado ou W, A, S e D.</p>
+                </article>
 
-            <p>
-                Use as <strong>setas do teclado</strong>
-                para movimentar o personagem.
-            </p>
+                <article class="instrucao">
+                    <span class="instrucao-icone">⭐</span>
+                    <h3>Ganhe pontos</h3>
+                    <p>Cada estrela coletada vale 10 pontos.</p>
+                </article>
 
-            <p>
-                ⭐ Colete as estrelas para ganhar pontos.
-            </p>
+                <article class="instrucao">
+                    <span class="instrucao-icone">🚧</span>
+                    <h3>Desvie</h3>
+                    <p>Evite os obstáculos para proteger suas vidas.</p>
+                </article>
 
-            <p>
-                🚪 Chegue até a porta para responder
-                a pergunta da fase.
-            </p>
-
-            <p>
-                💻 Acerte a pergunta para avançar.
-            </p>
-
+                <article class="instrucao">
+                    <span class="instrucao-icone">🧠</span>
+                    <h3>Aprenda</h3>
+                    <p>Chegue à porta e responda à pergunta de cada fase.</p>
+                </article>
+            </div>
         </section>
-
 
         <!-- RODAPÉ -->
 
         <footer>
-
-            <p>
-                Projeto escolar — Curso Técnico em Desenvolvimento de Sistemas
-            </p>
-
+            <p>Projeto escolar · Curso Técnico em Desenvolvimento de Sistemas</p>
+            <p>Desenvolvido para aprender e se divertir com tecnologia. 💙</p>
         </footer>
 
     </div>
-
-
-    <script src="script.js"></script>
-
 </body>
-
 </html>
